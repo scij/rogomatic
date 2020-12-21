@@ -44,7 +44,17 @@
 
 # define DIDFIGHT 3
 
-extern int genericinit(), sleepvalue();	/* From explore.c */
+/* forward declarations */
+static int callitpending ();
+static int fightmonster ();
+static int fightinvisible ();
+static int tomonster ();
+static int dropjunk ();
+static int aftermelee ();
+static int tostuff ();
+static int pickupafter ();
+static int wanttowake (char c);
+static int quitforhonors ();
 
 /*
  * strategize: Run through each rule until something fires. Return 1 if an
@@ -461,8 +471,7 @@ int   tomonster ()
  * Some monsters are included here because we want to shoot arrows at them.
  */
 
-wanttowake(c)
-char c;
+int wanttowake(char c)
 {
   char *monster = monname (c);
 
@@ -496,7 +505,7 @@ char c;
  *		Also rest if we are critically weak and have some food.
  */
 
-aftermelee ()
+int aftermelee ()
 {
   if (foughtmonster > 0) {
     lyinginwait = 1;
@@ -520,20 +529,20 @@ aftermelee ()
  *
  *      We are going into battle. Can we think of anything better to
  *      to than simply hacking at him with our weapon?
+ * m monster index
+ * moonster what is it?
+ * mbad how bad is it?
+ * danger howo many points damage per round?
+ * mdir which direction (clear line of sight)?
+ * mdist how many turns until battle?
+ * alert is he known to be awake?
+ * adj how many attackers are there?
  */
 
 # define die_in(n)	(Hp/n < danger*50/(100-k_run))
 # define live_for(n)	(! die_in(n))
 
-battlestations (m, monster, mbad, danger, mdir, mdist, alert, adj)
-int m;			/* Monster index */
-char *monster;          /* What is it? */
-int mbad;               /* How bad is it? */
-int danger;             /* How many points damage per round? */
-int mdir;               /* Which direction (clear line of sight)? */
-int mdist;              /* How many turns until battle? */
-int alert;              /* Is he known to be awake? */
-int adj;		/* How many attackers are there? */
+int battlestations (int m, char* monster, int mbad, int danger, int mdir, int mdist, int alert, int adj)
 {
   int obj, turns;
   static int stepback = 0;
@@ -1075,7 +1084,7 @@ int tostuff ()
  * fightinvisible: being hounded by unseen beasties, try something clever.
  */
 
-fightinvisible ()
+int fightinvisible ()
 {
   char cmd[20]; register int dir, liberties = 0, lastdir, obj;
 
@@ -1166,7 +1175,7 @@ fightinvisible ()
  * Note: some monsters are to wimpy archery, and some too mean.     MLM
  */
 
-archery ()
+int archery ()
 {
   register int m, mtk;
   char *monster;
@@ -1218,7 +1227,7 @@ archery ()
  * Bug:		Sometimes goes the long way around and doesnt see things.
  */
 
-pickupafter ()
+int pickupafter ()
 {
   /* If no goal */
   if (agoalr < 0 || agoalc < 0)
@@ -1241,7 +1250,7 @@ pickupafter ()
  *           removed from the game.
  */
 
-dropjunk ()
+int dropjunk ()
 {
   int obj;
 
@@ -1262,7 +1271,7 @@ dropjunk ()
  * Assumes a 10 percent death tax.
  */
 
-quitforhonors ()
+int quitforhonors ()
 {
   if (Gold > quitat && (Gold-Gold/10) <= quitat) {
     quitrogue ("quit (scoreboard)", Gold, 0);

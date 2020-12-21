@@ -31,38 +31,42 @@
 # include <curses.h>
 # include <ctype.h>
 # include <string.h>
+# include <stdlib.h>
 # include "types.h"
 # include "globals.h"
 
 # define EQUAL 0
 
+void showcommand(char* cmd);
+void clearcommand();
+int commandcount(char* c);
+void adjustpack(char* c);
+void bumpsearchcount();
+void usemsg (char* str, int obj);
+
 static int cmdonscreen = 0;
 
 /* Move one square in direction 'd' */
-move1 (d)
-int   d;
+void move1 (int d)
 {
   command (T_MOVING, "%c", keydir[d]);
 }
 
 /* Move in direction 'd' until we find something */
-fmove (d)
-int   d;
+void fmove (int d)
 {
   if (version < RV53A)	command (T_MOVING, "f%c", keydir[d]);
   else			command (T_MOVING, "%c", ctrl (keydir[d]));
 }
 
 /* Move 'count' squares in direction 'd', with time use mode 'mode' */
-rmove (count, d, mode)
-int   count, d, mode;
+void rmove (int count, int d, int mode)
 {
   command (mode, "%d%c", count, keydir[d]);
 }
 
 /* Move one square in direction 'd' without picking anything up */
-mmove (d, mode)
-int   d, mode;
+void mmove (int d, int mode)
 {
   command (mode, "m%c", keydir[d]);
 }
@@ -74,15 +78,16 @@ int   d, mode;
  */
 
 /* VARARGS2 */
-command (tmode, f, a1, a2, a3, a4)
-char *f;
-int tmode, a1, a2, a3, a4;
+void command (int tmode, char* f, ...)
 {
+  va_list sp;
   int times;
   char cmd[128], functionchar ();
 
   /* Build the command */
-  sprintf (cmd, f, a1, a2, a3, a4);
+  va_start(sp, f);
+  vsprintf (cmd, f, sp);
+  va_end(sp);
 
   debuglog ("command : command (%s)\n",cmd);
 
@@ -134,8 +139,7 @@ int tmode, a1, a2, a3, a4;
  * commandcount: Return the number of a times a command is to happen.
  */
 
-commandcount (cmd)
-char *cmd;
+int commandcount (char* cmd)
 {
   register int times = atoi (cmd);
 
@@ -193,8 +197,7 @@ char *cmd;
  * adjustpack: adjust pack in accordance with command.
  */
 
-adjustpack (cmd)
-char *cmd;
+void adjustpack (char* cmd)
 {
   char functionchar(), commandarg();
   int neww, obj;
@@ -330,7 +333,7 @@ char *cmd;
  * bumpsearchcount: Note that we just searched this square.
  */
 
-bumpsearchcount ()
+void bumpsearchcount ()
 {
   register int dr, dc;
 
@@ -343,7 +346,7 @@ bumpsearchcount ()
  * replaycommand: Find the old command in the log file and send it.
  */
 
-replaycommand ()
+int replaycommand ()
 {
   char oldcmd[128];
 
@@ -357,8 +360,7 @@ replaycommand ()
  * clearcommand:	Remove the command we showed.
  */
 
-showcommand (cmd)
-char *cmd;
+void showcommand (char* cmd)
 {
   register char *s;
   register int i = 72;
@@ -376,7 +378,7 @@ char *cmd;
   cmdonscreen = 1;
 }
 
-clearcommand ()
+void clearcommand ()
 {
   at (23,72); clrtoeol (); at (row, col);
   cmdonscreen = 0;
@@ -385,9 +387,7 @@ clearcommand ()
  * usemsg: About to use an item, tell the user.
  */
 
-usemsg (str, obj)
-char *str;
-int obj;
+void usemsg (char* str, int obj)
 {
   if (! dwait (D_INFORM, "%s (%s", str, itemstr (obj)))
     saynow ("%s (%s", str, itemstr (obj));

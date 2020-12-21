@@ -53,8 +53,10 @@ int   objval[] = {
   /* none */         0
 };
 
-worth (obj)
-int obj;
+/* forward declarations */
+extern int useless (int i);
+
+int worth (int obj)
 {
   int value, w;
 
@@ -147,8 +149,7 @@ int obj;
  * object is of no use. Used by worth to set value to 0.
  */
 
-useless (i)
-int i;
+int useless (int i)
 {
   /* Not useless if we are using it */
   if (itemis (i, INUSE))

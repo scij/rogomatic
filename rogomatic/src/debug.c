@@ -33,6 +33,7 @@
 # include <curses.h>
 # include <setjmp.h>
 # include <string.h>
+# include <stdarg.h>
 # include "types.h"
 # include "globals.h"
 # include "install.h"
@@ -45,15 +46,16 @@
  */
 
 /* VARARGS2 */
-dwait (msgtype, f, a1, a2, a3, a4, a5, a6, a7, a8)
-char *f;
-int msgtype, a1, a2, a3, a4, a5, a6, a7, a8;
+int dwait (int msgtype, char* f, ...)
 {
   char msg[128];
   int r, c;
+  va_list sp;
 
   /* Build the actual message */
-  sprintf (msg, f, a1, a2, a3, a4, a5, a6, a7, a8);
+  va_start(sp, f);
+  vsprintf (msg, f, sp);
+  va_end(sp);
 
   /* Log the message if the error is severe enough */
   if (!replaying && (msgtype & (D_FATAL | D_ERROR | D_WARNING))) {
@@ -128,7 +130,7 @@ int msgtype, a1, a2, a3, a4, a5, a6, a7, a8;
  * promptforflags: Prompt the user for a location and dump its flags.
  */
 
-promptforflags ()
+void promptforflags ()
 {
   int r, c;
 
@@ -154,8 +156,7 @@ char *fnames[] = {
   "boundry", "sleeper",  "everclr"
 };
 
-dumpflags (r, c)
-int   r, c;
+void dumpflags (int r, int c)
 {
   char **f; int b;
 
@@ -170,9 +171,7 @@ int   r, c;
  * Timehistory: print a time analysis of the game.
  */
 
-timehistory (f, sep)
-FILE *f;
-char sep;
+void timehistory (FILE* f, char sep)
 {
   register int i, j;
   char s[2048];
@@ -203,7 +202,7 @@ char sep;
  * toggledebug: Set the value of the debugging word.
  */
 
-toggledebug ()
+void toggledebug ()
 {
   char debugstr[100];
   int type = debugging & ~(D_FATAL | D_ERROR | D_WARNING);
@@ -251,9 +250,7 @@ toggledebug ()
  * getscrpos: Prompt the user for an x,y coordinate on the screen.
  */
 
-getscrpos (msg, r, c)
-char *msg;
-int *r, *c;
+int getscrpos (char* msg, int* r, int* c)
 {
   char buf[256];
 

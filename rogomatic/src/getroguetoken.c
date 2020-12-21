@@ -21,6 +21,7 @@
  */
 
 # include <stdio.h>
+# include <stdlib.h>
 
 # include "types.h"
 # include "globals.h"
@@ -95,7 +96,7 @@ void rogue_log_write_token (char ch)
         case CL_TOK: fprintf (fecho, "{ff}");                   break;
         case CM_TOK: fprintf (fecho, "{cm(%d,%d)}", number1, number2);  break;
         case CR_TOK: fprintf (fecho, "{cr}");                   break;
-        case ER_TOK: fprintf (fecho, "{ERRESC}", ch);           break;
+        case ER_TOK: fprintf (fecho, "{ERRESC}");               break;
         case LF_TOK: fprintf (fecho, "{lf}");                   break;
         case ND_TOK: fprintf (fecho, "{nd(%d)}", number1);      break;
         case SE_TOK: fprintf (fecho, "{se}");                   break;
@@ -580,8 +581,7 @@ getroguetoken (void)
  * getoldcommand: retrieve the old command from a logfile we are replaying.
  */
 
-getoldcommand (s)
-register char *s;
+void getoldcommand (char* s)
 {
   register int charcount = 0;
   char ch = ' ', term = '"', *startpat = "\nC: ";

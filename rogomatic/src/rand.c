@@ -38,6 +38,8 @@
  * Author: Michael Mauldin, June 14, 1983.
  */
 
+# include <time.h>
+
 /* Rand 1, period length 444674 */
 # define MUL1 1156
 # define OFF1 312342
@@ -67,8 +69,7 @@
 # define AUXLEN 97
 static int seed1=872978, seed2=518652, seed3=226543, auxtab[AUXLEN];
 
-rogo_srand (seed)
-int seed;
+void rogo_srand (int seed)
 {
   register int i;
 
@@ -93,8 +94,7 @@ int rogo_rand ()
   return (result);
 }
 
-rogo_randint (max)
-register int max;
+int rogo_randint (int max)
 {
   register int j, result;
 

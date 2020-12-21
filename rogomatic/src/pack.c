@@ -29,6 +29,7 @@
 
 # include <curses.h>
 # include <string.h>
+# include <stdlib.h>
 # include "types.h"
 # include "globals.h"
 
@@ -38,6 +39,13 @@ static char *stuffmess [] = {
   "missile", "armor", "amulet", "gold",
   "none"
 };
+
+/* forward declarations */
+static void clearpack(int pos);
+static void rollpackup(int pos);
+static void rollpackdown(int pos);
+static void countpack();
+
 
 /*
  * itemstr: print the inventory message for a single item.
@@ -88,8 +96,7 @@ register int i;
  * dumpinv: print the inventory. calls itemstr.
  */
 
-dumpinv (f)
-register FILE *f;
+void dumpinv (FILE* f)
 {
   register int i;
 
@@ -111,8 +118,7 @@ register FILE *f;
  * removeinv: remove an item from the inventory.
  */
 
-removeinv (pos)
-int pos;
+void removeinv (int pos)
 {
   if (--(inven[pos].count) == 0) {
     clearpack  (pos);		/* Assure nothing at that spot  DR UT */
@@ -133,8 +139,7 @@ int pos;
  * things can be dropped all at once.
  */
 
-deleteinv (pos)
-int pos;
+void deleteinv (int pos)
 {
 
   if (--(inven[pos].count) == 0 || inven[pos].type == missile) {
@@ -154,8 +159,7 @@ int pos;
  * clearpack: zero out slot in pack.  DR UTexas 01/05/84
  */
 
-clearpack (pos)
-int pos;
+void clearpack (int pos)
 {
   if (pos >= MAXINV) return;
 
@@ -180,8 +184,7 @@ int pos;
  * the pack.
  */
 
-rollpackup (pos)
-register int pos;
+void rollpackup (int pos)
 {
   register char *savebuf;
   register int i;
@@ -215,8 +218,7 @@ register int pos;
  * objects behind that position.
  */
 
-rollpackdown (pos)
-register int pos;
+void rollpackdown (int pos)
 {
   register char *savebuf;
   register int i;
@@ -251,7 +253,7 @@ register int pos;
  * doresetinv.
  */
 
-resetinv()
+void resetinv()
 {
   if (!replaying) {
     command (T_OTHER, "i");
@@ -270,7 +272,7 @@ resetinv()
  * doresetinv: reset the inventory.  DR UTexas 01/05/84
  */
 
-doresetinv ()
+void doresetinv ()
 {
   int i;
   static char space[MAXINV][80];
@@ -295,8 +297,7 @@ doresetinv ()
 
 # define xtr(w,b,e,k) {what=(w);xbeg=mess+(b);xend=mend-(e);xknow|=(k);}
 
-inventory (msgstart, msgend)
-char *msgstart, *msgend;
+int inventory (char* msgstart, char* msgend)
 {
   register char *p, *q, *mess = msgstart, *mend = msgend;
   char objname[100];
@@ -636,7 +637,7 @@ char *msgstart, *msgend;
  * countpack: Count objects, missiles, and food in the pack.
  */
 
-countpack ()
+void countpack ()
 {
   register int i, cnt;
 

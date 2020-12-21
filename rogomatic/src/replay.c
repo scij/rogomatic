@@ -45,13 +45,19 @@ struct levstruct {
 } levpos[MAXNUMLEV];
 int numlev = 0;
 
+/* forward declarations */
+
+static int findlevel (FILE* f, struct levstruct* lvpos, int* nmlev, int maxnum);
+static int findmatch (FILE* f, char* s);
+static void fillstruct (FILE* f, struct levstruct* lev);
+
 /*
  * positionreplay: Called when user has typed the 'R' command, it fills
  * the level table by calling findlevel if necessary, and then positions
  * the log file to the level requested by the user.
  */
 
-positionreplay ()
+void positionreplay ()
 {
   int curlev;
   long curpos;
@@ -119,10 +125,7 @@ positionreplay ()
  *             Rog-O-Matic log file.
  */
 
-findlevel (f, lvpos, nmlev, maxnum)
-FILE *f;
-struct levstruct *lvpos;
-int *nmlev, maxnum;
+int findlevel (FILE* f, struct levstruct* lvpos, int* nmlev, int maxnum)
 {
   char ch;
   int l=0;
@@ -160,9 +163,7 @@ int *nmlev, maxnum;
  * fields of a levstruct.
  */
 
-fillstruct (f, lev)
-FILE *f;
-struct levstruct *lev;
+void fillstruct (FILE* f, struct levstruct* lev)
 {
   lev->level  = 0;
   lev->gold   = 0;
@@ -209,9 +210,7 @@ struct levstruct *lev;
  * Restriction: 's' must not contain prefix of itself as a substring.
  */
 
-int findmatch (f, s)
-FILE *f;
-char *s;
+int findmatch (FILE* f, char* s)
 {
   char *m = s, ch;
 

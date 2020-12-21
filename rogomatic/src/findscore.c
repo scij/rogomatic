@@ -28,12 +28,16 @@
  */
 
 # include <stdio.h>
+# include <stdlib.h>
+# include <unistd.h>
 # include "install.h"
+# include "types.h"
+# include "globals.h"
+
 # define TEMPFL "/tmp/RscoreXXXXXX"
 # define ISDIGIT(c) ((c) >= '0' && (c) <= '9')
 
-findscore (rogue, roguename)
-register char *rogue, *roguename;
+int findscore (char* rogue, char* roguename)
 {
   register int score, best = -1;
   char cmd[100], buffer[BUFSIZ];

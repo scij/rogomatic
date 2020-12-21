@@ -52,6 +52,9 @@
     if (stand) standend ();			\
     refresh (); }
 
+/* forward declarations */
+static void markchokepts ();
+
 /*
  * markcycles: evokes fond memories of an earlier time, when Andrew
  * was a hacker who just patched things together until they worked,
@@ -62,7 +65,7 @@
  * runaway code.
  */
 
-markcycles (print)
+int markcycles (int print)
 {
   short mark[1920];
   struct {short where,door,dirs;} st[1000];
@@ -148,7 +151,7 @@ markcycles (print)
  * Added: 3/7/87 by mlm
  */
 
-markchokepts ()
+void markchokepts ()
 {
   register int *Scr, *ScrEnd, loc;
 

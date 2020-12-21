@@ -46,7 +46,7 @@ extern char *parmstr;		/* Pointer to argument space */
 extern char pending_call_letter;	/* Pack object we know a name for */
 extern char pending_call_name[];	/* Pack object name for letter */
 extern char queue[];		/* stuff to be sent to Rogue */
-extern char *roguename;		/* Name we are playing under */
+extern char roguename[];		/* Name we are playing under */
 extern char screen[24][80];	/* characters drawn by Rogue */
 extern char sumline[];		/* Summation line */
 extern char *termination;	/* Latin verb for how we died */
@@ -55,7 +55,11 @@ extern char versionstr[];	/* Version of Rogue we are playing */
 /* character and string functions */
 extern int getlogtoken();
 extern char *getname(), *itemstr();
-extern char logchar(), *monname(), *findentry_getfakename(), *findentry_getrealname();
+extern char logchar();
+extern char* monname(char c);
+extern char* findentry_getfakename();
+extern char* findentry_getrealname();
+extern int stlmatch(char* big, char* small);
 
 /* double precision floating point functions */
 double prob(), mean(), stdev();	/* For stats.c */
@@ -214,3 +218,298 @@ extern int k_exper;		/* Level on which to experiment with items */
 extern int k_run;		/* Propensity for retreating */
 extern int k_wake;		/* Propensity for waking things up */
 extern int k_food;		/* Propensity for hoarding food (rings) */
+
+/* arms functions */
+extern int weaponclass(int i);
+extern void setbonuses();
+extern int havearmor(int k, int print, int rustproof);
+extern int havering(int k, int print);
+extern int haveweapon(int k, int print);
+extern int havebow(int k, int print);
+extern int havemissile ();
+extern int havearrow ();
+extern int armorclass (int i);
+extern int bowclass (int i);
+extern int ringclass (int i);
+
+/* things functions */
+extern int havenamed(stuff otype, char* name);
+extern int havemult(stuff otype, char* name, int count);
+extern int haveuseless ();
+extern int wearing(char* name);
+extern int havefood(int n);
+extern int wielding(stuff otype);
+extern int havemult (stuff otype, char* name, int count);
+extern void dumpstuff();
+extern void deletestuff(int row, int col);
+extern void initstufflist();
+extern int have (stuff otype);
+extern int unknown (stuff otype);
+extern int reads (int obj);
+extern int havewand (char* name);
+extern int point (int obj, int dir);
+extern void addstuff (char ch, int row, int col);
+extern int willrust(int i);
+extern int takeoff ();
+extern void display (char* s);
+extern int quaff (int obj);
+extern int puton (int obj);
+extern int drop (int obj);
+extern int wield (int obj);
+extern int throw (int obj, int dir);
+extern int hungry ();
+extern int fainting ();
+extern int removering (int ring);
+extern int prepareident (int obj, int iscroll);
+extern int unidentified (stuff otype);
+extern int haveother (stuff otype, int other);
+extern int haveminus ();
+extern int pickident ();
+
+/* command functions */
+extern void command(int tmode, char* f, ...);
+extern void showcommand(char* c);
+extern void fmove(int d);
+extern void rmove(int count, int d, int mode);
+extern void mmove(int d, int mode);
+extern void move1 (int d);
+extern int replaycommand ();
+
+/* debug functions */
+extern int dwait (int msgtype, char* f, ...);
+extern void debuglog (const char *fmt, ...);
+extern void toggledebug();
+extern void promptforflags();
+extern int getscrpos(char* msg, int* r, int* c);
+extern void dumpflags(int row, int col);
+extern void timehistory(FILE* f, char sep);
+
+/* debuglog functions */
+extern void debuglog_open (const char *log);
+extern void debuglog_close();
+
+/* monster functions */
+extern void sleepmonster();
+extern void wakemonster(int dir);
+extern void dumpmonster();
+extern void holdmonsters ();
+
+/* io functions */
+extern void rogo_send(char* f, ...);
+extern void say(char* f, ...);
+extern void saynow(char* f, ...);
+extern void at(int row, int col);
+extern void printsnap (FILE* f);
+extern void quitrogue (char* reason, int gld, int terminationtype);
+extern void dumpwalls();
+extern void dosnapshot();
+extern void sendnow(char* f, ...);
+extern void getrogue(char* waitstr, int onat);
+extern void clearscreen();
+extern void terpbot();
+extern void redrawscreen();
+extern void pauserogue();
+extern void startreplay (FILE** logf, char* logfname);
+extern void toggleecho();
+extern void getrogver();
+extern int resend();
+extern int charsavail();
+extern void givehelp();
+extern void clearsendqueue();
+extern void waitfor (char* mess);
+
+/* pack functions */
+extern void deleteinv(int pos);
+extern void removeinv (int pos);
+extern void dumpinv(FILE* f);
+extern void doresetinv();
+extern void resetinv();
+extern int inventory (char* msgstart, char* msgend);
+
+/* rogue token functions */
+extern void getoldcommand(char* c);
+extern void rogue_log_write_command (char c);
+extern int rogue_log_open (const char *filename);
+extern void rogue_log_close();
+extern void open_frogue_fd(int fd);
+extern void open_frogue_debuglog(const char* fn);
+extern void close_frogue_debuglog();
+
+/* database functions */
+extern void useobj (char* str);
+extern int used (char* codename);
+extern void dumpdatabase ();
+extern void infername (char* codename, char* name, stuff item_type);
+extern void addobj (char* codename, int pack_index, stuff item_type);
+extern int know (char* name);
+
+/* config functions */
+extern const char* getRgmDir();
+
+/* mess functions */
+extern void summary (FILE* f, char sep);
+extern void terpmes();
+extern void versiondep();
+extern void infer (char* objname, stuff item_type);
+extern void killed (char* monster);
+
+/* survival functions */
+extern int markcycles(int print);
+
+/* search functions */
+extern int makemove (int movetype, int (*evalinit)(), int (*evaluate)(), int reevaluate);
+extern int findmove (int movetype, int (*evalinit)(), int (*evaluate)(), int reevaluate);
+extern void setnewgoal();
+extern void cancelmove (int movetype);
+extern int followmap (int movetype);
+
+/* explore functions */
+extern int expinit();
+extern void avoidmonsters();
+extern int zigzagvalue (int r, int c, int depth, int* val, int* avd, int* cont);
+extern void pinavoid();
+extern int setpsd(int print);
+extern void unrest ();
+extern int genericinit();
+extern int sleepvalue();
+extern int exploreroom ();
+extern int findroom ();
+extern int doorexplore ();
+extern int gotowards (int r, int c, int running);
+extern int archmonster (int m, int trns);
+extern int findsafe ();
+extern int movetorest ();
+
+/* tactics functions */
+extern int shootindark ();
+extern int handleweapon ();
+extern int handlearmor ();
+extern int handlering ();
+extern int light ();
+extern int dinnertime ();
+extern int quaffpotion ();
+extern int readscroll ();
+extern int grope (int turns);
+extern int restup ();
+extern int goupstairs (int running);
+extern int godownstairs (int running);
+extern int trywand ();
+extern int gotowardsgoal ();
+extern int gotocorner ();
+extern int plunge ();
+extern int findarrow ();
+extern int checkcango (int dir, int turns);
+extern int eat ();
+extern int findring (char* name);
+extern int wear (int obj);
+extern int waitaround ();
+
+/* strategy functions */
+extern int strategize();
+extern int archery ();
+extern int battlestations (int m, char* monster, int mbad, int danger, int mdir, int mdist, int alert, int adj);
+
+/* rooms functions */
+extern void markmissingrooms();
+extern int nextto (int type, int r, int c);
+extern int mazedoor (int row, int col);
+extern int canbedoor (int deadr, int deadc);
+extern int whichroom (int r, int c);
+extern int isexplored (int row, int col);
+extern void markexplored (int row, int col);
+extern int nexttowall (int r, int c);
+extern int darkroom ();
+extern int lightroom ();
+extern void updatepos (char ch, int row, int col);
+extern void updateat();
+extern void currentrectangle();
+extern void mapinfer();
+extern void inferhall(int row, int col);
+extern void newlevel();
+extern void printexplored();
+extern void dumpmazedoor();
+extern void nametrap (int traptype, int standingonit);
+extern void findstairs (int notr, int notc);
+extern void foundnew ();
+extern int point (int obj, int dir);
+extern int haveexplored (int n);
+extern int downright (int* drow, int* dcol);
+
+/* ltm functions */
+extern int findmonster(char* monster);
+extern void analyzeltm();
+extern void restoreltm();
+extern void dumpmonstertable();
+extern void saveltm(int score);
+extern void mapcharacter (char ch, char* str);
+
+/* stats functions */
+extern void addprob (probability* p, int success);
+extern void addstat (statistic* s, int datum);
+extern void clearstat (statistic* s);
+extern void parsestat (char* buf, statistic* s);
+extern void writestat (FILE* f, statistic* s);
+extern void writeprob (FILE* f, probability* p);
+extern void parseprob (char* buf, probability* p);
+extern void clearprob (probability* p);
+
+/* scorefile functions */
+extern void add_score (char* new_line, char* vers, int ntrm);
+extern void dumpscore(char* vers);
+
+/* utility functions */
+extern void reset_int();
+extern int fexists (char* fn);
+extern void quit (int code, char* fmt, ...);
+extern void critical();
+extern void uncritical();
+extern int lock_file (const char* lokfil, int maxtime);
+extern void unlock_file (const char* lokfil);
+extern void int_exit (void (*exitproc)(int));
+extern int filelength (char* f);
+extern int rogo_baudrate ();
+extern int stlmatch (char* big, char* small);
+
+/* rand functions */
+extern int rogo_randint (int max);
+extern void rogo_srand (int seed);
+
+/* config functions */
+extern const char* getLockFile();
+
+/* replay functions */
+extern void positionreplay();
+
+/* learn functions */
+extern int readgenes(char* genepool);
+extern void initpool(int k, int m);
+extern void setknobs(int* newid, int* knb, int* best, int* avg);
+extern void evalknobs(int gid, int scorem, int level);
+extern void writegenes(char* genepool);
+extern void analyzepool (int full);
+extern FILE* rogo_openlog(char* genelog);
+extern void rogo_closelog();
+
+/* monster functions */
+extern int monsternum (char* monster);
+extern int seemonster (char* monster);
+extern void deletemonster (int r, int c);
+extern int isholder (char* monster);
+extern void newmonsterlevel ();
+extern void addmonster (char ch, int r, int c, int quiescence);
+extern int seeawakemonster (char* monster);
+
+/* worth functions */
+extern int worth (int obj);
+
+/* survival functions */
+extern int runaway ();
+extern int backtodoor (int dist);
+extern int canrun ();
+extern int unpin ();
+
+/* titlepage functions */
+extern void halftimeshow (int level);
+
+/* findscore functions */
+extern int findscore (char* rogue, char* roguename);

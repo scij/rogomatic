@@ -25,6 +25,7 @@
 /*
  * datesub.l:
  */
+static  int yylex();
 
 %}
 %%
@@ -42,12 +43,13 @@
 "Dec"				printf ("12"); 
 %%
 
-yywrap ()
+int yywrap ()
 {
-;
+  return 0;
 }
 
-main ()
-{ while (yylex ())
+int main (int argc, char* argv[])
+{ 
+    while (yylex ())
     ; 
 }

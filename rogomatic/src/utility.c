@@ -40,6 +40,8 @@
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <time.h>
+# include <unistd.h>
+# include <fcntl.h>
 
 # include "install.h"
 
@@ -51,7 +53,7 @@
  * rogo_baudrate: Determine the baud rate of the terminal
  */
 
-rogo_baudrate ()
+int rogo_baudrate ()
 {
   return (baudrate());
 }
@@ -98,8 +100,7 @@ char *fname, *mode;
  * fexists: return a boolean if the named file exists
  */
 
-fexists (fn)
-char *fn;
+int fexists (char* fn)
 {
   struct stat pbuf;
 
@@ -110,8 +111,7 @@ char *fn;
  * filelength: Do a stat and return the length of a file.
  */
 
-int filelength (f)
-char *f;
+int filelength (char* f)
 {
   struct stat sbuf;
 
@@ -127,7 +127,7 @@ char *f;
 
 static void   (*hstat)(int), (*istat)(int), (*qstat)(int), (*pstat)(int);
 
-critical ()
+void critical ()
 {
 // FIXME: when uncommented, get bus errors :(
 //  hstat = signal (SIGHUP, SIG_IGN);
@@ -140,7 +140,7 @@ critical ()
  * uncritical: Enable interrupts
  */
 
-uncritical ()
+void uncritical ()
 {
 // FIXME: when uncommented, get bus errors :(
 //  signal (SIGHUP, hstat);
@@ -153,7 +153,7 @@ uncritical ()
  * reset_int: Set all interrupts to default
  */
 
-reset_int ()
+void reset_int ()
 {
   signal (SIGHUP, SIG_DFL);
   signal (SIGINT, SIG_DFL);
@@ -165,8 +165,7 @@ reset_int ()
  * int_exit: Set up a function to call if we get an interrupt
  */
 
-int_exit (exitproc)
-void (*exitproc)(int);
+void int_exit (void (*exitproc)(int))
 {
   if (signal (SIGHUP, SIG_IGN) != SIG_IGN)  signal (SIGHUP, exitproc);
 
@@ -184,9 +183,7 @@ void (*exitproc)(int);
 
 # define NOWRITE 0
 
-lock_file (lokfil, maxtime)
-char *lokfil;
-int maxtime;
+int lock_file (const char* lokfil, int maxtime)
 {
 
   int try;
@@ -225,8 +222,7 @@ start:
  * unlock_file: Unlock a lock file.
  */
 
-unlock_file (lokfil)
-char *lokfil;
+void unlock_file (const char* lokfil)
 {
   unlink (lokfil);
 }
@@ -237,11 +233,13 @@ char *lokfil;
  */
 
 /* VARARGS2 */
-quit (code, fmt, a1, a2, a3, a4)
-int code, a1, a2, a3, a4;
-char *fmt;
+void quit (int code, char* fmt, ...)
 {
-  fprintf (stderr, fmt, a1, a2, a3, a4);
+  va_list sp;
+
+  va_start(sp, fmt);
+  vfprintf (stderr, fmt, sp);
+  va_end(sp);
   exit (code);
 }
 
@@ -264,8 +262,7 @@ char *fmt;
  *  Originally from klg (Ken Greer) on IUS/SUS UNIX
  */
 
-int stlmatch (big, small)
-char *small, *big;
+int stlmatch (char* big, char* small)
 {
   register char *s, *b;
   s = small;

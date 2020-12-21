@@ -33,6 +33,7 @@
 
 # include <stdio.h>
 # include <stdlib.h>
+# include <unistd.h>
 # include <sys/types.h>
 # include <sys/stat.h>
 # include "types.h"
@@ -44,6 +45,9 @@
 
 static char lokfil[100];
 
+/* forward declarations */
+static void intrupscore();
+
 /*
  * add_score: Write a new score line out to the correct rogomatic score
  * file by creating a temporary copy and inserting the new line in the
@@ -51,9 +55,7 @@ static char lokfil[100];
  * score file and catching interrupts and things.
  */
 
-add_score (new_line, vers, ntrm)
-char *new_line, *vers;
-int ntrm;
+void add_score (char* new_line, char* vers, int ntrm)
 {
   int   wantscore = 1;
   char  ch;
@@ -103,12 +105,11 @@ int ntrm;
  * dumpscore: Print out the scoreboard.
  */
 
-dumpscore (vers)
-char *vers;
+void dumpscore (char* vers)
 {
   char  ch, scrfil[100], delfil[100], newfil[100], allfil[100], cmd[256];
   FILE *scoref, *deltaf;
-  int   oldmask, intrupscore ();
+  int   oldmask;
 
   sprintf (lokfil, "%s %s", LOCKFILE, vers);
   sprintf (scrfil, "%s/rgmscore%s", getRgmDir (), vers);
@@ -198,7 +199,7 @@ char *vers;
  * intrupscore: We have an interrupt, clean up and unlock the score file.
  */
 
-intrupscore ()
+void intrupscore ()
 {
   unlock_file (lokfil);
   exit (1);

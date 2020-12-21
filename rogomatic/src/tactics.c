@@ -47,7 +47,7 @@
  * Note that leather armor does not rust.
  */
 
-handlearmor ()
+int handlearmor ()
 {
   int obj;
 
@@ -107,7 +107,7 @@ handlearmor ()
  *  The current strategy is to wield the best weapon from haveweapon.
  */
 
-handleweapon ()
+int handleweapon ()
 {
   int obj;
 
@@ -133,7 +133,7 @@ handleweapon ()
 
 # define MAXSTR (version < RV52A ? 1900 : 3100)
 
-quaffpotion ()
+int quaffpotion ()
 {
   int obj = NONE, obj2 = NONE;
 
@@ -239,7 +239,7 @@ quaffpotion ()
  * armor).
  */
 
-readscroll ()
+int readscroll ()
 {
   register int obj, obj2;
 
@@ -343,7 +343,7 @@ readscroll ()
  * much food we need to use each ring.
  */
 
-handlering ()
+int handlering ()
 {
   int ring1, ring2;
 
@@ -390,8 +390,7 @@ handlering ()
  * Could be extended to have an ordering of rings to wear.
  */
 
-findring (name)
-char *name;
+int findring (char* name)
 {
   int obj;
 
@@ -419,8 +418,7 @@ char *name;
  * fails to move us).		MLM
  */
 
-grope (turns)
-register int turns;
+int grope (int turns)
 {
   register int k, moves;
 
@@ -455,7 +453,7 @@ register int turns;
  *            magic arrow. Make certain we have some food.
  */
 
-findarrow ()
+int findarrow ()
 {
   /* If wrong version, not cheating or must go find food, then forget it */
   if (version > RV36B || !cheat || hungry())
@@ -478,8 +476,7 @@ findarrow ()
  * we can fire from a door, even if we cant shoot through one).
  */
 
-checkcango (dir, turns)
-register int dir, turns;
+int checkcango (int dir, int turns)
 {
   register int r, c, dr, dc;
 
@@ -493,10 +490,10 @@ register int dir, turns;
 
 /*
  * godownstairs: issues a down command and check for the halftimeshow.
+ * running   True ==> don't do anything fancy
  */
 
-godownstairs (running)
-register int running; /* True ==> don't do anything fancy */
+int godownstairs (int running)
 {
   register int p;
   int genericinit(), downvalue();
@@ -576,7 +573,7 @@ register int running; /* True ==> don't do anything fancy */
  * we head down immediately.
  */
 
-plunge ()
+int plunge ()
 {
   /* Check for applicability of this rule */
   if (stairrow == NONE && !foundtrapdoor) return (0);
@@ -628,20 +625,20 @@ static struct {
   { 21,  3, -1,  1, 78,  1}
 };  /* Bottom left corner */
 
-static gc = 0; /* Goal corner from 0..3 */
+static int gc = 0; /* Goal corner from 0..3 */
 
 /*
  * waitaround: For some reason we want to stay on this level for a while.
  * Try running to each corner of the level.
  */
 
-waitaround ()
+int waitaround ()
 {
   register int i, j;
 
   if (gotowardsgoal ()) return (1);
 
-  gc = ++gc % 4;
+  gc = (gc+1) % 4;
 
   for (i = cb[gc].vertstart; i != cb[gc].vertend; i += cb[gc].vertdelt)
     for (j = cb[gc].horstart; j != cb[gc].horend; j += cb[gc].hordelt)
@@ -660,8 +657,7 @@ waitaround ()
  *      game, and issues the proper calls to get the score written.
  */
 
-goupstairs (running)
-int running;
+int goupstairs (int running)
 {
   int obj;
 
@@ -725,7 +721,7 @@ int running;
  *				Don't rest when hungry (and no food)
  */
 
-restup ()
+int restup ()
 {
   register int obj, turns;
 
@@ -788,7 +784,7 @@ restup ()
  * that square. Calls gotowards which calls bfsearch.
  */
 
-gotowardsgoal ()
+int gotowardsgoal ()
 {
   if (goalr > 0 && goalc > 0) { /* Keep on trucking */
     if (goalr == atrow && goalc == atcol) { goalr = NONE; goalc = NONE; }
@@ -805,7 +801,7 @@ gotowardsgoal ()
  *		them into the corner (which destroys them).
  */
 
-gotocorner ()
+int gotocorner ()
 {
   int r, c;
 
@@ -823,7 +819,7 @@ gotocorner ()
  * lightroom: Try to light up the room if we are below level 17.
  */
 
-light ()
+int light ()
 {
   if (Level < 17) return (0);
 
@@ -834,7 +830,7 @@ light ()
  * shootindark: If we are arching at an old monster, fire another arrow.
  */
 
-shootindark ()
+int shootindark ()
 {
   register int obj, bow;
 
@@ -863,7 +859,7 @@ shootindark ()
  * dinnertime: Eat if we are hungry or if we have a surplus of food.
  */
 
-dinnertime ()
+int dinnertime ()
 {
   if ((havefood (5) && objcount == maxobj && ! droppedscare) ||
       (larder > 0 && hungry ()))
@@ -877,7 +873,7 @@ dinnertime ()
  * to generate a message which identifies the wand.
  */
 
-trywand ()
+int trywand ()
 {
   register int obj, dir, r, c, count;
 
@@ -912,7 +908,7 @@ trywand ()
  * eat: If we have food, eat it.
  */
 
-eat ()
+int eat ()
 {
   int obj;
 

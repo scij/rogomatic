@@ -32,6 +32,8 @@
 # include <signal.h>
 # include <unistd.h>
 # include "install.h"
+# include "types.h"
+# include "globals.h"
 
 # define READ    0
 # define WRITE   1
@@ -40,12 +42,13 @@
 
 # define ROGUETERM "rg|rterm:am:bs:ce=^[^S:cl=^L:cm=^[a%+ %+ :co#80:li#24:so=^[D:se=^[d:pt:ta=^I:up=^[;:db:xn:"
 
-int   frogue, trogue;
+static int   frogue_fd, trogue_fd;
 
-main (argc, argv)
-int   argc;
-char *argv[];
+/* forward declarations */
+static void replaylog (char* fname, char* options);
+static int author ();
 
+int main (int argc, char* argv[])
 {
   int   ptc[2], ctp[2];
   int   child, score = 0, oldgame = 0;
@@ -124,8 +127,8 @@ char *argv[];
     exit (1);
   }
 
-  trogue = ptc[WRITE];
-  frogue = ctp[READ];
+  trogue_fd = ptc[WRITE];
+  frogue_fd = ctp[READ];
 
   if ((child = fork ()) == 0) {
     close (0);
@@ -154,8 +157,8 @@ char *argv[];
     char ft[3];
     char rp[32];
 
-    ft[0] = 'a' + frogue;
-    ft[1] = 'a' + trogue;
+    ft[0] = 'a' + frogue_fd;
+    ft[1] = 'a' + trogue_fd;
     ft[2] = '\0';
 
     /* Pass the process ID of the Rogue process as an ASCII string */
@@ -175,12 +178,11 @@ char *argv[];
 /*
  * replaylog: Given a log file name and an options string, exec the player
  * process to replay the game.  No Rogue process is needed (since we are
- * replaying an old game), so the frogue and trogue file descrptiors are
+ * replaying an old game), so the frogue_fd and trogue_fd file descrptiors are
  * given the fake value 'Z'.
  */
 
-replaylog (fname, options)
-char *fname, *options;
+void replaylog (char* fname, char* options)
 {
   execl ("player", "player", "ZZ", "0", options, fname, 0);
 # ifdef PLAYER
@@ -195,7 +197,7 @@ char *fname, *options;
  *	See if a user is an author of the program
  */
 
-author()
+int author()
 {
   switch (getuid()) {
     case 1337:	/* Fuzzy */

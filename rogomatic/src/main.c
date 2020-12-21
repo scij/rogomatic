@@ -105,10 +105,8 @@
 # include "types.h"
 # include "termtokens.h"
 # include "install.h"
+# include "globals.h"
 
-
-/* FIXME: get rid of this prototype in the correct way */
-FILE *rogo_openlog (char *genelog);
 
 /* global data - see globals.h for current definitions */
 
@@ -246,6 +244,8 @@ int   zonemap[9][9];		/* Map of zones connections */
 void (*istat)(int);
 void onintr (int sig);
 char getroguetoken (), *getname();
+void startlesson();
+void endlesson();
 
 /* Stuff list, list of objects on this level */
 stuffrec slist[MAXSTUFF]; 	int slistlen=0;
@@ -343,9 +343,7 @@ jmp_buf  commandtop;
  * Main program
  */
 
-main (argc, argv)
-int   argc;
-char *argv[];
+int  main (int argc, char* argv[])
 {
   char  ch, *s, *getenv(), *statusline(), msg[128];
   int startingup = 1;
@@ -776,7 +774,7 @@ char *argv[];
     char lognam[128];
 
     /* Make up a new log file name */
-    sprintf (lognam, "%0.4s.%d.%d", ourkiller, MaxLevel, ourscore);
+    sprintf (lognam, "%4s.%d.%d", ourkiller, MaxLevel, ourscore);
 
     /* Close the open file */
     toggleecho ();
@@ -819,7 +817,7 @@ void onintr (int sig)
  * test this game, and set the parameters (or "knobs") accordingly.
  */
 
-startlesson ()
+void startlesson ()
 {
   int tmpseed = 0;
 
@@ -873,7 +871,7 @@ startlesson ()
  * evaluate the performance of this genotype and save in genepool.
  */
 
-endlesson ()
+void endlesson ()
 {
   if (geneid > 0 &&
       (stlmatch (termination, "perditus") ||

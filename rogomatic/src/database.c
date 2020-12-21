@@ -58,9 +58,7 @@ int datalen = 0;
  *           and of item_type (both must match exactly).
  */
 
-findfake (string, item_type)
-char  *string;
-stuff item_type;
+int findfake (char* string, stuff item_type)
 {
   register int i;
 
@@ -85,8 +83,7 @@ stuff item_type;
  * findentry: find the database entry for 'string'
  */
 
-findentry (string)
-char *string;
+int findentry (char* string)
 {
   register int i;
 
@@ -104,9 +101,7 @@ char *string;
  *     the realname.  returns pointer to the fakename or "".
  */
 
-char *findentry_getfakename (string, item_type)
-char  *string;
-stuff item_type;
+char *findentry_getfakename (char* string, stuff item_type)
 {
   register int i;
 
@@ -125,9 +120,7 @@ stuff item_type;
  *     the realname.  returns pointer to the realname or "".
  */
 
-char *findentry_getrealname (string, item_type)
-char  *string;
-stuff item_type;
+char *findentry_getrealname (char* string, stuff item_type)
 {
   register int i;
 
@@ -144,10 +137,7 @@ stuff item_type;
  * addobj: Add item to dbase.
  */
 
-addobj (codename, pack_index, item_type)
-char  *codename;
-int   pack_index;
-stuff item_type;
+void addobj (char* codename, int pack_index, stuff item_type)
 {
   if (findfake (codename, item_type) == NOTFOUND) {
     dbase[datalen].pack_index = pack_index;
@@ -164,8 +154,7 @@ stuff item_type;
  *         object with name 'string'.
  */
 
-useobj (string)
-char *string;
+void useobj (char* string)
 {
   int i = findentry (string);
 
@@ -180,10 +169,7 @@ char *string;
  * light).
  */
 
-infername (codename, name, item_type)
-char  *codename;
-char  *name;
-stuff item_type;
+void infername (char* codename, char* name, stuff item_type)
 {
   register int i;
 
@@ -212,8 +198,7 @@ stuff item_type;
  * used: Return true if we have marked 'codename' as used.
  */
 
-int used (codename)
-char *codename;
+int used (char* codename)
 {
   register int i;
 
@@ -221,14 +206,14 @@ char *codename;
     if (streq (dbase[i].fakename, codename))
       return (dbase[i].used);
 
+  return 0;
 }
 
 /*
  * know: Return true if we know what the fake name for 'name' is.
  */
 
-int know (name)
-char *name;
+int know (char* name)
 {
   register int i;
 
@@ -243,8 +228,7 @@ char *name;
  * realname: Returns the real name of an object named 'codename'.
  */
 
-char *realname (codename)
-char *codename;
+char *realname (char* codename)
 {
   register int i;
 
@@ -259,7 +243,7 @@ char *codename;
  * dumpdatabase: Debugging, dump the database on the screen.
  */
 
-dumpdatabase ()
+void dumpdatabase ()
 {
   register int i;
 

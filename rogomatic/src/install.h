@@ -120,7 +120,7 @@
  * not be used unless RGMDIR is also defined.
  */
 
-# define LOCKFILE	"/var/games/rogomatic/RgmLock"
+# define LOCKFILE	"/usr/local/var/rogomatic/RgmLock"
 
 /* 
  * This directory must be defined.  It will contain logs of Rogomatic's
@@ -131,7 +131,7 @@
  * directory.
  */
 
-# define RGMDIR		"/var/games/rogomatic"
+# define RGMDIR		"/usr/local/var/rogomatic"
 
 /* 
  * This file is created in the current directory if the snapshot command
